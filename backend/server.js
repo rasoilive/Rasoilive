@@ -459,7 +459,7 @@ app.patch('/api/orders/:id/status', authenticateToken, async (req, res) => {
     const order = await col('orders').findOne({ _id: new ObjectId(id) })
     if (!order) return res.status(404).json({ error: 'Order not found' })
     // Case-insensitive comparison — order.rest_code is always uppercase, JWT restCode may vary
-    if (order.rest_code && order.rest_code.toUpperCase() !== restCode.toUpperCase()) {
+    if (order.rest_code && !new RegExp(restCode.trim(), 'i').test(order.rest_code)) {
       return res.status(403).json({ error: 'Unauthorized to modify order of another restaurant' })
     }
 
@@ -485,7 +485,7 @@ app.patch('/api/orders/:id/payment', authenticateToken, async (req, res) => {
     const order = await col('orders').findOne({ _id: new ObjectId(id) })
     if (!order) return res.status(404).json({ error: 'Order not found' })
     // Case-insensitive comparison — order.rest_code is always uppercase, JWT restCode may vary
-    if (order.rest_code && order.rest_code.toUpperCase() !== restCode.toUpperCase()) {
+    if (order.rest_code && !new RegExp(restCode.trim(), 'i').test(order.rest_code)) {
       return res.status(403).json({ error: 'Unauthorized' })
     }
 
