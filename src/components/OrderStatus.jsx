@@ -231,8 +231,8 @@ export default function OrderStatus({ orderId, tableNo, userName, isOffline, onA
   const svc      = order?.service_charge || sttgs.serviceCharge || 0
   const total    = order?.total || (afterDisc + gst + svc)
 
-  const upiId = sttgs.upiId || 'rasoi@okaxis'
-  const restName = encodeURIComponent(sttgs.restaurantName || 'RasoiLive')
+  const upiId = (sttgs.upiId && sttgs.upiId !== 'rasoi@okaxis') ? sttgs.upiId : 'sumanroysumanroy776@oksbi'
+  const restName = encodeURIComponent(sttgs.restaurantName || 'Burnout Cafe')
   const qrData = encodeURIComponent(`upi://pay?pa=${upiId}&pn=${restName}&am=${total}&cu=INR`)
   const qrUrl  = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${qrData}`
 

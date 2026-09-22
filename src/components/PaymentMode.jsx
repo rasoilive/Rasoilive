@@ -70,8 +70,8 @@ export default function PaymentMode({ pendingPayload, onOrderSuccess, onBack }) 
   if (showQR) {
     // Determine total amount from pendingPayload
     const amount = pendingPayload ? pendingPayload.total : 0
-    // UPI intent string (requires a valid UPI ID in real usage, falling back to the one in settings if possible, but here we just use a placeholder or empty pa to let the QR code handle it if they just scan)
-    const upiLink = `upi://pay?pa=rasoi@okaxis&pn=Burnout%20Cafe&am=${amount}&cu=INR`
+    // UPI intent string
+    const upiLink = `upi://pay?pa=sumanroysumanroy776@oksbi&pn=Burnout%20Cafe&am=${amount}&cu=INR`
 
     return (
       <div className="view-center animate-fade-in" style={{ position: 'relative' }}>
