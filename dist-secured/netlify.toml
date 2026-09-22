@@ -1,0 +1,41 @@
+# ============================================================
+# RASOI LIVE — Netlify Configuration
+# ============================================================
+
+[build]
+  publish = "dist-secured"
+  command = "npx vite build"
+
+# ============================================================
+# 1. API Proxy (MUST BE FIRST)
+# Connects Netlify frontend to Render backend
+# ============================================================
+[[redirects]]
+  from = "/api/*"
+  to = "https://rasoi-api-rh9n.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+# ============================================================
+# 2. SPA Routing (MUST BE LAST)
+# Send all other routes to index.html for React
+# ============================================================
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# ============================================================
+# 3. Security Headers (ENTERPRISE GRADE)
+# Protections against Clickjacking, XSS, and Data Sniffing
+# ============================================================
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:;"

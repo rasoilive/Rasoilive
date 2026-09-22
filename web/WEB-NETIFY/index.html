@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rasoi Live — Your Restaurant's Digital Revolution | Satyronix Publications</title>
+  <meta name="description" content="Rasoi Live gives your restaurant its own branded digital identity. QR ordering, live kitchen sync, analytics. Zero hardware. Zero commission."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    /* ───── RESET & BASE ───── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --gold:      #c9a84c;
+      --gold-lt:   #e8cc7a;
+      --gold-drk:  #8b6914;
+      --cream:     #f5efe6;
+      --bg:        #07060d;
+      --bg2:       #0c0b16;
+      --surface:   rgba(255,255,255,0.035);
+      --border:    rgba(201,168,76,0.12);
+      --border-lt: rgba(201,168,76,0.25);
+      --text:      #ede8e1;
+      --muted:     #9090a0;
+      --success:   #4ade80;
+      --error:     #f87171;
+
+      --font-display: 'Cormorant Garamond', 'Georgia', serif;
+      --font-body:    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-body); background: var(--bg); color: var(--text); overflow-x: hidden; line-height: 1.6; }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-drk); border-radius: 4px; }
+
+    /* ───── UTILITY ───── */
+    .container { max-width: 1160px; margin: 0 auto; padding: 0 28px; }
+    .gold { color: var(--gold); }
+    .serif { font-family: var(--font-display); }
+
+    .btn-gold {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-lt) 50%, var(--gold) 100%);
+      background-size: 200% auto;
+      color: #0a0800; border: none; padding: 16px 38px;
+      border-radius: 4px; font-family: var(--font-body);
+      font-weight: 600; font-size: 0.95rem; letter-spacing: 1.5px;
+      text-transform: uppercase; cursor: pointer;
+      transition: all 0.5s ease;
+      box-shadow: 0 4px 30px rgba(201,168,76,0.25), inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+    .btn-gold:hover { background-position: right center; box-shadow: 0 8px 40px rgba(201,168,76,0.45); transform: translateY(-2px); }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--gold-lt);
+      border: 1px solid var(--border-lt);
+      padding: 15px 36px; border-radius: 4px;
+      font-family: var(--font-body); font-weight: 500; font-size: 0.9rem;
+      letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
+      transition: all 0.35s ease;
+    }
+    .btn-ghost:hover { background: rgba(201,168,76,0.06); border-color: var(--gold); color: var(--gold); }
+
+    /* ───── NAV ───── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 200;
+      padding: 20px 0;
+      transition: all 0.5s ease;
+    }
+    nav.scrolled {
+      background: rgba(7,6,13,0.95);
+      backdrop-filter: blur(24px) saturate(1.4);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+    }
+    .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-logo img { height: 36px; border-radius: 6px; }
+    .nav-logo-text { font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; letter-spacing: 3px; color: var(--text); }
+    .nav-logo-text span { color: var(--gold); }
+    .nav-links { display: flex; gap: 40px; align-items: center; }
+    .nav-links a { color: rgba(237,232,225,0.65); text-decoration: none; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; transition: color 0.3s; }
+    .nav-links a:hover { color: var(--gold); }
+
+    /* ───── HERO ───── */
+    .hero {
+      min-height: 100vh; position: relative;
+      display: flex; align-items: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background-image: url('hero-bg.png');
+      background-size: cover; background-position: center 40%;
+      filter: brightness(0.3) saturate(1.4);
+    }
+
+    /* Luxury gradient overlays */
+    .hero-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(180deg, rgba(7,6,13,0.3) 0%, transparent 40%, rgba(7,6,13,0.85) 100%),
+        linear-gradient(90deg, rgba(7,6,13,0.85) 0%, rgba(7,6,13,0.2) 60%, transparent 100%);
+    }
+
+    .hero-ornament {
+      position: absolute; inset: 0; z-index: 1;
+      background:
+        radial-gradient(ellipse 40% 60% at 10% 50%, rgba(201,168,76,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 30% 40% at 90% 20%, rgba(150,80,200,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      padding-top: 120px; padding-bottom: 80px;
+      display: flex; align-items: center; justify-content: space-between; gap: 40px;
+    }
+    .hero-text-col { flex: 1; max-width: 760px; }
+    .hero-visual-col {
+      flex: 1; display: flex; justify-content: flex-end; align-items: center;
+      position: relative; max-width: 500px;
+    }
+    .hero-premium-circle {
+      width: clamp(280px, 35vw, 420px);
+      height: clamp(280px, 35vw, 420px);
+      border-radius: 50%;
+      background: rgba(201,168,76,0.03);
+      border: 1px solid rgba(201,168,76,0.15);
+      display: flex; justify-content: center; align-items: center;
+      position: relative;
+      box-shadow: 0 0 60px rgba(201,168,76,0.08), inset 0 0 60px rgba(201,168,76,0.05);
+      animation: pulseCircle 6s ease-in-out infinite alternate;
+    }
+    .hero-premium-circle::before {
+      content: ''; position: absolute; inset: -15px; border-radius: 50%;
+      border: 1px dashed rgba(201,168,76,0.2);
+      animation: spinDash 60s linear infinite;
+    }
+    .hero-premium-circle img {
+      width: 65%; height: auto; object-fit: contain;
+      filter: drop-shadow(0 10px 30px rgba(0,0,0,0.6));
+    }
+    @keyframes pulseCircle { 0% { transform: scale(1); } 100% { transform: scale(1.03); box-shadow: 0 0 80px rgba(201,168,76,0.12); } }
+    @keyframes spinDash { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    .hero-eyebrow {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 32px;
+    }
+    .hero-line { width: 50px; height: 1px; background: var(--gold); opacity: 0.7; }
+    .hero-eyebrow-text {
+      font-size: 0.75rem; letter-spacing: 5px; text-transform: uppercase;
+      color: var(--gold); font-weight: 500;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display); font-size: clamp(3rem, 7vw, 6.5rem);
+      font-weight: 300; line-height: 1.05; margin-bottom: 28px;
+    }
+    .hero h1 em { font-style: italic; color: var(--gold-lt); }
+    .hero h1 strong { font-weight: 600; }
+
+    .hero-sub {
+      font-size: 1.1rem; color: rgba(237,232,225,0.65);
+      max-width: 520px; line-height: 1.85;
+      margin-bottom: 48px; font-weight: 300;
+    }
+
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+
+    .hero-scroll {
+      position: absolute; bottom: 48px; left: 50%; transform: translateX(-50%);
+      z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px;
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    .hero-scroll span { font-size: 0.7rem; letter-spacing: 3px; color: rgba(255,255,255,0.3); text-transform: uppercase; }
+    .scroll-arrow { width: 20px; height: 20px; border-right: 1px solid rgba(201,168,76,0.4); border-bottom: 1px solid rgba(201,168,76,0.4); transform: rotate(45deg); }
+
+    @keyframes scrollPulse { 0%,100%{opacity:0.4;transform:translateX(-50%) translateY(0)} 50%{opacity:1;transform:translateX(-50%) translateY(8px)} }
+
+    /* ───── DIVIDER ───── */
+    .ornamental-divider {
+      display: flex; align-items: center; gap: 20px;
+      padding: 0 28px; margin: 0 auto; max-width: 400px;
+    }
+    .div-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-drk), transparent); }
+    .div-diamond { width: 8px; height: 8px; background: var(--gold); transform: rotate(45deg); flex-shrink: 0; }
+
+    /* ───── BRAND PROMISE ───── */
+    .brand-promise {
+      padding: 80px 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.04) 0%, transparent 60%);
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .brand-promise h2 {
+      font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 3.5rem);
+      font-weight: 300; line-height: 1.3; margin-bottom: 20px;
+    }
+    .brand-promise p { color: var(--muted); max-width: 620px; margin: 0 auto; font-size: 1rem; line-height: 1.8; }
+
+    /* ───── STATS ───── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(5,1fr);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stat { padding: 44px 28px; text-align: center; border-right: 1px solid var(--border); transition: background 0.3s; }
+    .stat:last-child { border-right: none; }
+    .stat:hover { background: rgba(201,168,76,0.04); }
+    .stat-num { font-family: var(--font-display); font-size: 3rem; font-weight: 600; color: var(--gold); line-height: 1; margin-bottom: 8px; }
+    .stat-lbl { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+
+    /* ───── SECTION BASE ───── */
+    .section { padding: 120px 0; }
+    .section-eyebrow { font-size: 0.72rem; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+    .section-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.8rem); font-weight: 300; line-height: 1.15; margin-bottom: 24px; }
+    .section-body { color: var(--muted); font-size: 1rem; line-height: 1.85; max-width: 600px; }
+
+    /* ───── YOUR IDENTITY ───── */
+    .identity-section { padding: 120px 0; background: var(--bg2); border-top: 1px solid var(--border); }
+    .identity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-top: 70px; }
+    .identity-items { display: flex; flex-direction: column; gap: 0; }
+    .identity-item {
+      display: flex; gap: 24px; padding: 32px 0;
+      border-bottom: 1px solid var(--border);
+      transition: all 0.3s;
+    }
+    .identity-item:first-child { border-top: 1px solid var(--border); }
+    .identity-item:hover { padding-left: 12px; }
+    .identity-num { font-family: var(--font-display); font-size: 1.8rem; color: var(--gold-drk); font-weight: 300; line-height: 1; flex-shrink: 0; width: 40px; }
+    .identity-text h4 { font-weight: 600; font-size: 1rem; margin-bottom: 8px; color: var(--cream); }
+    .identity-text p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
+
+    .identity-visual {
+      background: linear-gradient(145deg, rgba(201,168,76,0.06), rgba(150,100,200,0.04));
+      border: 1px solid var(--border-lt); border-radius: 2px;
+      padding: 48px; position: relative; overflow: hidden;
+    }
+    .identity-visual::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+    .identity-preview-label { font-size: 0.65rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold-drk); margin-bottom: 24px; }
+    .preview-restaurant-name { font-family: var(--font-display); font-size: 2.2rem; font-weight: 600; margin-bottom: 8px; }
+    .preview-tagline { font-size: 0.85rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 28px; }
+    .preview-menu-items { display: flex; flex-direction: column; gap: 12px; }
+    .preview-item { display: flex; justify-content: space-between; padding: 12px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 2px; }
+    .preview-item-name { font-size: 0.9rem; }
+    .preview-item-price { color: var(--gold); font-weight: 600; font-size: 0.9rem; }
+    .preview-brand { margin-top: 24px; text-align: center; font-size: 0.7rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; border-top: 1px solid var(--border); padding-top: 20px; }
+
+    /* ───── FEATURES ───── */
+    .features-section { padding: 120px 0; }
+    .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); margin-top: 70px; border: 1px solid var(--border); }
+    .feat {
+      background: var(--bg); padding: 48px 36px;
+      transition: all 0.4s ease;
+      position: relative; overflow: hidden;
+    }
+    .feat::after { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity:0; transition: opacity 0.4s; }
+    .feat:hover { background: rgba(201,168,76,0.03); }
+    .feat:hover::after { opacity: 1; }
+    .feat-icon { font-size: 2.2rem; margin-bottom: 28px; }
+    .feat-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; margin-bottom: 14px; }
+    .feat-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.8; }
+
+    /* ───── DEVICE ───── */
+    .device-section { padding: 120px 0; background: var(--bg2); border-top: 1px solid var(--border); }
+    .device-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-top: 70px; }
+    .device-list { display: flex; flex-direction: column; gap: 20px; }
+    .device-item {
+      display: flex; gap: 24px; align-items: center;
+      padding: 24px 28px; border: 1px solid var(--border);
+      transition: all 0.3s ease; cursor: default;
+    }
+    .device-item:hover { border-color: var(--gold-drk); background: rgba(201,168,76,0.04); transform: translateX(8px); }
+    .device-em { font-size: 2rem; }
+    .device-name { font-weight: 600; margin-bottom: 4px; font-size: 1rem; }
+    .device-note { font-size: 0.85rem; color: var(--muted); }
+
+    .security-block { padding: 48px; border: 1px solid var(--border); background: rgba(201,168,76,0.03); }
+    .security-icon { font-size: 2.5rem; margin-bottom: 20px; color: var(--gold); display: flex; }
+    .feat-icon svg, .device-em svg, .security-icon svg { width: 1em; height: 1em; stroke: currentColor; stroke-width: 1.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .security-block h3 { font-family: var(--font-display); font-size: 1.8rem; font-weight: 600; margin-bottom: 16px; }
+    .security-block p { color: var(--muted); line-height: 1.8; margin-bottom: 20px; font-size: 0.95rem; }
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; }
+    .badge { padding: 6px 14px; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.5px; border-radius: 2px; }
+    .badge-g { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.2); color: #4ade80; }
+    .badge-b { background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); color: #60a5fa; }
+
+    /* ───── HOW IT WORKS ───── */
+    .how-section { padding: 120px 0; }
+    .how-steps { display: flex; flex-direction: column; gap: 0; margin-top: 70px; max-width: 800px; }
+    .how-step { display: flex; gap: 40px; align-items: flex-start; padding: 40px 0; border-bottom: 1px solid var(--border); }
+    .how-step:first-child { border-top: 1px solid var(--border); }
+    .how-num { font-family: var(--font-display); font-size: 4rem; font-weight: 300; color: var(--gold-drk); line-height: 1; flex-shrink: 0; width: 60px; }
+    .how-body {}
+    .how-title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; margin-bottom: 10px; }
+    .how-desc { font-size: 0.95rem; color: var(--muted); line-height: 1.8; }
+
+    /* ───── TESTIMONIALS ───── */
+    .testi-section { padding: 120px 0; background: var(--bg2); border-top: 1px solid var(--border); }
+    .testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px; margin-top: 70px; }
+    .testi-card { padding: 40px 36px; border: 1px solid var(--border); transition: all 0.3s; }
+    .testi-card:hover { border-color: var(--gold-drk); }
+    .testi-stars { color: var(--gold); letter-spacing: 2px; font-size: 0.9rem; margin-bottom: 20px; }
+    .testi-quote { font-family: var(--font-display); font-style: italic; font-size: 1.1rem; color: rgba(237,232,225,0.8); line-height: 1.7; margin-bottom: 28px; }
+    .testi-author { display: flex; gap: 14px; align-items: center; }
+    .testi-av { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--gold-drk), var(--gold)); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #0a0800; font-size: 1rem; }
+    .testi-name { font-weight: 600; font-size: 0.95rem; }
+    .testi-resto { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+
+    /* ───── CTA ───── */
+    .cta-section {
+      padding: 160px 0; text-align: center; position: relative; overflow: hidden;
+      background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+      border-top: 1px solid var(--border);
+    }
+    .cta-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 700px; height: 500px; background: radial-gradient(ellipse, rgba(201,168,76,0.08) 0%, transparent 65%); filter: blur(60px); pointer-events: none; }
+    .cta-section h2 { font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 5.5rem); font-weight: 300; line-height: 1.1; margin-bottom: 24px; }
+    .cta-section p { color: var(--muted); font-size: 1.05rem; max-width: 520px; margin: 0 auto 48px; line-height: 1.8; }
+    .cta-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    /* ───── FOOTER ───── */
+    footer { background: #030208; border-top: 1px solid var(--border); padding: 80px 0 40px; }
+    .footer-inner { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 60px; }
+    .footer-brand-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .footer-brand-logo img { height: 28px; border-radius: 5px; }
+    .footer-brand-logo span { font-family: var(--font-display); font-size: 1.3rem; letter-spacing: 2px; }
+    .footer-brand-logo span em { font-style: normal; color: var(--gold); }
+    .footer-brand p { color: var(--muted); font-size: 0.88rem; line-height: 1.8; }
+    .footer-col h5 { font-size: 0.72rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold-drk); margin-bottom: 20px; font-weight: 600; }
+    .footer-col a { display: block; color: var(--muted); text-decoration: none; font-size: 0.88rem; margin-bottom: 12px; transition: color 0.3s; }
+    .footer-col a:hover { color: var(--gold-lt); }
+    .footer-bottom { border-top: 1px solid var(--border); padding-top: 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .footer-bottom p { color: var(--muted); font-size: 0.82rem; }
+    .satyronix { display: flex; align-items: center; gap: 10px; }
+    .satyronix-dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+    .satyronix span { font-size: 0.82rem; color: var(--muted); }
+    .satyronix strong { color: rgba(237,232,225,0.7); }
+
+    /* ───── MODAL / REGISTRATION FORM ───── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,0.8); backdrop-filter: blur(12px) saturate(1.2);
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: #0d0c18;
+      border: 1px solid var(--border-lt);
+      width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto;
+      position: relative; animation: modalIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes modalIn { from { opacity:0; transform: scale(0.9) translateY(20px); } to { opacity:1; transform: scale(1) translateY(0); } }
+
+    .modal::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, transparent, var(--gold), var(--gold-lt), var(--gold), transparent); }
+
+    .modal-header { padding: 48px 48px 0; }
+    .modal-close {
+      position: absolute; top: 20px; right: 20px; width: 36px; height: 36px;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+      color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; transition: all 0.3s; border-radius: 2px;
+    }
+    .modal-close:hover { background: rgba(201,168,76,0.1); color: var(--gold); border-color: var(--gold-drk); }
+    .modal-eyebrow { font-size: 0.7rem; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+    .modal-title { font-family: var(--font-display); font-size: 2.2rem; font-weight: 300; line-height: 1.2; margin-bottom: 8px; }
+    .modal-sub { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+
+    .modal-body { padding: 40px 48px 48px; }
+
+    .form-section-label { font-size: 0.65rem; letter-spacing: 5px; text-transform: uppercase; color: var(--gold-drk); margin-bottom: 20px; margin-top: 32px; font-weight: 600; }
+    .form-section-label:first-child { margin-top: 0; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-row.full { grid-template-columns: 1fr; }
+
+    .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .form-label { font-size: 0.78rem; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(237,232,225,0.55); font-weight: 500; }
+    .form-label span { color: var(--gold); } /* required star */
+
+    .form-input, .form-select, .form-textarea {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text); padding: 14px 16px; font-family: var(--font-body);
+      font-size: 0.95rem; transition: all 0.3s; outline: none;
+      border-radius: 2px; width: 100%;
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: rgba(255,255,255,0.2); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--gold-drk); background: rgba(201,168,76,0.04);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.06);
+    }
+    .form-select { appearance: none; cursor: pointer; }
+    .form-select option { background: #0d0c18; }
+    .form-textarea { resize: vertical; min-height: 90px; }
+
+    .form-note { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+    .form-divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+    .plan-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 4px; }
+    .plan-card {
+      padding: 18px 16px; border: 1px solid var(--border); cursor: pointer;
+      transition: all 0.3s; position: relative;
+    }
+    .plan-card input[type="radio"] { display: none; }
+    .plan-card:has(input:checked) { border-color: var(--gold); background: rgba(201,168,76,0.06); }
+    .plan-card:has(input:checked)::after { content:'✓'; position:absolute; top:8px; right:10px; color:var(--gold); font-size:0.8rem; }
+    .plan-card:hover { border-color: var(--gold-drk); }
+    .plan-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+    .plan-price { font-family: var(--font-display); font-size: 1.6rem; color: var(--gold); font-weight: 600; line-height: 1; }
+    .plan-price span { font-size: 0.75rem; color: var(--muted); font-family: var(--font-body); font-weight: 400; }
+    .plan-feature { font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
+
+    .submit-row { display: flex; gap: 12px; align-items: center; margin-top: 32px; }
+    .form-submit {
+      flex: 1; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-lt) 50%, var(--gold) 100%);
+      background-size: 200%; color: #0a0800; border: none; padding: 18px 32px;
+      font-family: var(--font-body); font-weight: 700; font-size: 0.95rem;
+      letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+      transition: all 0.5s; border-radius: 2px;
+    }
+    .form-submit:hover { background-position: right center; box-shadow: 0 6px 30px rgba(201,168,76,0.4); }
+    .form-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .form-success { display: none; text-align: center; padding: 60px 48px; }
+    .form-success.active { display: block; }
+    .success-icon { font-size: 3.5rem; margin-bottom: 20px; }
+    .success-title { font-family: var(--font-display); font-size: 2.2rem; font-weight: 300; margin-bottom: 12px; }
+    .success-text { color: var(--muted); font-size: 0.95rem; line-height: 1.7; }
+
+    /* ───── REVEAL ANIMATION ───── */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.9s ease, transform 0.9s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ───── RESPONSIVE ───── */
+    @media(max-width:960px) {
+      .hero-content { flex-direction: column; text-align: center; padding-top: 100px; gap: 60px; }
+      .hero-text-col { display: flex; flex-direction: column; align-items: center; }
+      .hero-eyebrow { justify-content: center; }
+      .hero h1 { max-width: 100%; }
+      .hero-visual-col { justify-content: center; width: 100%; }
+      .hero-premium-circle { width: 300px; height: 300px; }
+      .stats-row { grid-template-columns: repeat(3,1fr); }
+      .identity-grid, .device-grid, .testi-grid, .footer-inner { grid-template-columns:1fr; gap:40px; }
+      .features-grid { grid-template-columns:1fr; }
+      .plan-cards { grid-template-columns:1fr; }
+      .form-row { grid-template-columns:1fr; }
+    }
+    @media(max-width:680px) {
+      .nav-links { display:none; }
+      .hero h1 { font-size: 2.8rem; }
+      .stats-row { grid-template-columns:repeat(2,1fr); }
+      .modal-header, .modal-body { padding-left:24px; padding-right:24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════ NAV ══════════════════════════ -->
+<nav id="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <img src="logo.png" alt="Rasoi Live" style="height:45px; border-radius:0;" onerror="this.style.display='none'"/>
+        <div class="nav-logo-text" style="display:none;">RASOI <span>LIVE</span></div>
+      </a>
+      <div class="nav-links">
+        <a href="#identity">Your Brand</a>
+        <a href="#features">Features</a>
+        <a href="#devices">Any Device</a>
+        <a href="#how">How It Works</a>
+        <button class="btn-gold" onclick="openModal()" style="padding:12px 24px;font-size:0.82rem;">Register Restaurant</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════ HERO ══════════════════════════ -->
+<section class="hero" id="top">
+  <div class="hero-bg"></div>
+  <div class="hero-ornament"></div>
+
+  <div class="container" style="position:relative;z-index:2;width:100%;">
+    <div class="hero-content">
+      <div class="hero-text-col reveal">
+        <div class="hero-eyebrow">
+          <div class="hero-line"></div>
+          <span class="hero-eyebrow-text">A Startup from Silchar, Assam</span>
+          <div class="hero-line"></div>
+        </div>
+
+        <h1>
+          Your Restaurant.<br/>
+          <em>Your Brand.</em><br/>
+          <strong>Fully Digital.</strong>
+        </h1>
+
+        <p class="hero-sub">
+          Give your restaurant its own digital identity — complete with your logo, your branding, and your menu. QR ordering, live kitchen sync, and real-time analytics. Zero hardware. Zero commission. Works on any device your customers already hold.
+        </p>
+
+        <div class="hero-actions">
+          <button class="btn-gold" onclick="openModal()">
+            Register Your Restaurant &nbsp;→
+          </button>
+          <button class="btn-ghost" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+            See Features
+          </button>
+        </div>
+      </div>
+      
+      <div class="hero-visual-col reveal" style="transition-delay:0.2s;">
+        <div class="hero-premium-circle">
+          <img src="logo.png" alt="Rasoi Live Premium" onerror="this.style.display='none'"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ BRAND PROMISE ══════════════════════════ -->
+<div class="brand-promise reveal">
+  <div class="container">
+    <div class="ornamental-divider" style="margin-bottom:40px;">
+      <div class="div-line"></div><div class="div-diamond"></div><div class="div-line"></div>
+    </div>
+    <h2 class="serif">We don't give you a <em style="color:var(--gold-lt);font-style:italic;">generic</em> platform.<br/>We give you <strong>your own</strong>.</h2>
+    <p style="margin-top:20px;">Rasoi Live builds your restaurant's complete digital presence — custom-branded for you. Your customers see your name, your logo, and your menu. Not ours.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════ STATS ══════════════════════════ -->
+<div class="stats-row reveal">
+  <div class="stat"><div class="stat-num serif">0%</div><div class="stat-lbl">Commission Per Order</div></div>
+  <div class="stat"><div class="stat-num serif">₹ 0</div><div class="stat-lbl">Hardware Required</div></div>
+  <div class="stat"><div class="stat-num serif">&lt; 3s</div><div class="stat-lbl">To Place an Order</div></div>
+  <div class="stat"><div class="stat-num serif">Any</div><div class="stat-lbl">Device — Phone, Tablet, PC</div></div>
+  <div class="stat"><div class="stat-num serif">∞</div><div class="stat-lbl">Tables Supported</div></div>
+</div>
+
+<!-- ══════════════════════════ YOUR IDENTITY ══════════════════════════ -->
+<section class="identity-section reveal" id="identity">
+  <div class="container">
+    <div class="section-eyebrow">Your Brand Identity</div>
+    <h2 class="section-title serif">Your Logo. Your Name.<br/>Your Digital Restaurant.</h2>
+    <p class="section-body">Every restaurant we onboard gets their own fully branded experience. Your customers will never see "Rasoi Live" — they'll see <em style="color:var(--gold-lt);">your restaurant</em>.</p>
+
+    <div class="identity-grid">
+      <div class="identity-items">
+        <div class="identity-item">
+          <div class="identity-num">01</div>
+          <div class="identity-text">
+            <h4>Your Restaurant's Name & Logo</h4>
+            <p>Your brand is placed prominently across the entire customer experience — menu header, bill receipts, and payment screens. Fully yours.</p>
+          </div>
+        </div>
+        <div class="identity-item">
+          <div class="identity-num">02</div>
+          <div class="identity-text">
+            <h4>Custom Menu with Your Prices</h4>
+            <p>You control your entire menu — add dishes, set prices, toggle availability, update categories. Changes go live to customers in seconds.</p>
+          </div>
+        </div>
+        <div class="identity-item">
+          <div class="identity-num">03</div>
+          <div class="identity-text">
+            <h4>Your Own Tax & Discount Rules</h4>
+            <p>Set your GST %, discount percentage, and service charge. Your rules apply across every order automatically — no manual calculations.</p>
+          </div>
+        </div>
+        <div class="identity-item">
+          <div class="identity-num">04</div>
+          <div class="identity-text">
+            <h4>Branded Reports & Invoices</h4>
+            <p>Every invoice, every PDF report, every Excel export carries your restaurant's name. Professional and branded — ready to share with your accountant.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live preview mockup -->
+      <div class="identity-visual">
+        <div class="identity-preview-label">Live Customer View — Your Restaurant</div>
+        <div class="preview-restaurant-name serif">Spice Garden</div>
+        <div class="preview-tagline">Authentic Indian Cuisine</div>
+        <div class="preview-menu-items">
+          <div class="preview-item"><span class="preview-item-name">🍛 Butter Chicken</span><span class="preview-item-price">₹ 320</span></div>
+          <div class="preview-item"><span class="preview-item-name">🥘 Dal Makhani</span><span class="preview-item-price">₹ 240</span></div>
+          <div class="preview-item"><span class="preview-item-name">🫓 Garlic Naan</span><span class="preview-item-price">₹ 60</span></div>
+          <div class="preview-item"><span class="preview-item-name">🍚 Biryani (Special)</span><span class="preview-item-price">₹ 420</span></div>
+        </div>
+        <div class="preview-brand">Powered by Rasoi Live Platform</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ FEATURES ══════════════════════════ -->
+<section class="features-section reveal" id="features">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;">
+      <div>
+        <div class="section-eyebrow">Complete Feature Suite</div>
+        <h2 class="section-title serif">Everything Your Restaurant<br/>Will Ever Need</h2>
+      </div>
+      <button class="btn-ghost" onclick="openModal()">Register Now →</button>
+    </div>
+
+    <div class="features-grid">
+      <div class="feat">
+        <div class="feat-icon" style="color:var(--gold-lt)"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line><path d="M9 2h6v2H9z"></path></svg></div>
+        <div class="feat-title serif">QR Code Ordering</div>
+        <p class="feat-desc">Table-specific QR codes load your branded menu instantly. Customers order without downloading any app — just scan and go.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="color:var(--gold-lt)"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></div>
+        <div class="feat-title serif">Real-Time Order Dashboard</div>
+        <p class="feat-desc">Orders appear on your screen the instant they're placed. Update status to Preparing → Served and customers see it live on their phones.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="color:var(--gold-lt)"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg></div>
+        <div class="feat-title serif">Cash & Online Payments</div>
+        <p class="feat-desc">Accept UPI, card, or cash. Customers choose at checkout. Every transaction is logged with timestamp, mode, and amount automatically.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="color:var(--gold-lt)"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg></div>
+        <div class="feat-title serif">Live Revenue Analytics</div>
+        <p class="feat-desc">Revenue, pending payments, top dishes, cash vs online split — all live. Export to Excel or generate a professional PDF report in one click.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="color:var(--gold-lt)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg></div>
+        <div class="feat-title serif">Digital Menu Manager</div>
+        <p class="feat-desc">Update your menu from anywhere in seconds. Add items, mark out-of-stock, set categories, toggle veg/non-veg — no reprinting, ever again.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="color:var(--gold-lt)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+        <div class="feat-title serif">Business Settings Control</div>
+        <p class="feat-desc">Configure GST %, discount percentage, and service charges from the owner panel. All customer bills update instantly across every table.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="color:var(--gold-lt)"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
+        <div class="feat-title serif">Professional Reports</div>
+        <p class="feat-desc">One-click branded sales report with gross revenue, top 5 items, payment breakdowns, and complete order history — perfect for accounting.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="color:var(--gold-lt)"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+        <div class="feat-title serif">Customer Feedback</div>
+        <p class="feat-desc">Post-meal star ratings and comments flow directly to your dashboard so you can understand your guests and continuously improve.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="color:var(--gold-lt)"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></div>
+        <div class="feat-title serif">Secured Owner Access</div>
+        <p class="feat-desc">Multi-attempt lockout, progressive wait times (3 min → 1 hour), and secure session management. Your data stays yours, always.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ ANY DEVICE ══════════════════════════ -->
+<section class="device-section reveal" id="devices">
+  <div class="container">
+    <div class="device-grid">
+      <div>
+        <div class="section-eyebrow">Zero Hardware Cost</div>
+        <h2 class="section-title serif">Works on Any Device<br/>You Already Have</h2>
+        <p class="section-body">No dedicated POS terminals. No proprietary scanners. No expensive iPad stands. Rasoi Live runs in any modern browser — on whatever device your customers or staff carry.</p>
+        <div style="margin-top:40px;">
+          <div class="device-list">
+            <div class="device-item"><div class="device-em" style="color:var(--gold-lt)"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></div><div><div class="device-name">Any Smartphone</div><div class="device-note">Android or iPhone. Customer scans QR → browser opens → order placed. No app download needed.</div></div></div>
+            <div class="device-item"><div class="device-em" style="color:var(--gold-lt)"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="2" y1="20" x2="22" y2="20"></line><line x1="8" y1="20" x2="16" y2="20"></line><line x1="12" y1="17" x2="12" y2="20"></line></svg></div><div><div class="device-name">Laptop or Desktop</div><div class="device-note">Your owner dashboard runs on any PC or Mac you already have at the counter. Nothing new to buy.</div></div></div>
+            <div class="device-item"><div class="device-em" style="color:var(--gold-lt)"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></div><div><div class="device-name">Tablet or iPad</div><div class="device-note">A cheap Android tablet becomes your full kitchen display — no expensive POS hardware needed.</div></div></div>
+            <div class="device-item"><div class="device-em" style="color:var(--gold-lt)"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg></div><div><div class="device-name">Even Budget Phones</div><div class="device-note">Rasoi Live is lightweight by design. Older or lower-spec devices work seamlessly without lag.</div></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="security-block">
+        <div class="security-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></div>
+        <h3 class="serif">Enterprise Security.<br/>Restaurant Simplicity.</h3>
+        <p>Your data is protected at every layer. Owner access is gated behind authenticated login with automatic lockout after failed attempts. Customer orders are tied to their table session only.</p>
+        <p>All data travels over HTTPS with encrypted connections. We never sell your data, your menu, or your revenue information to any third party.</p>
+        <div class="badges">
+          <span class="badge badge-g">✓ Secure Login</span>
+          <span class="badge badge-b">✓ HTTPS Encrypted</span>
+          <span class="badge badge-g">✓ Auto Lockout</span>
+          <span class="badge badge-b">✓ No Data Selling</span>
+          <span class="badge badge-g">✓ Table-Scoped Sessions</span>
+          <span class="badge badge-b">✓ Privacy First</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ HOW IT WORKS ══════════════════════════ -->
+<section class="how-section reveal" id="how">
+  <div class="container">
+    <div class="section-eyebrow">Getting Started</div>
+    <h2 class="section-title serif">From Sign-Up to Live<br/>in Under an Hour</h2>
+    <p class="section-body">We handle the setup. You focus on the food.</p>
+
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="how-num serif">I</div>
+        <div class="how-body">
+          <div class="how-title serif">Register Your Restaurant</div>
+          <p class="how-desc">Fill out the registration form with your restaurant details — name, location, number of tables, and contact info. Our team reviews and contacts you within 24 hours to complete onboarding.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-num serif">II</div>
+        <div class="how-body">
+          <div class="how-title serif">We Set Up Your Branded Platform</div>
+          <p class="how-desc">Satyronix sets up your personalized instance of Rasoi Live — with your restaurant name, logo, and initial menu pre-loaded. We hand you your owner credentials and table QR codes, ready to print.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-num serif">III</div>
+        <div class="how-body">
+          <div class="how-title serif">Print QR Codes → Place on Tables</div>
+          <p class="how-desc">Print the unique QR codes for each table on any printer. Laminate them, frame them, or stick them on the table — that is your entire hardware setup. Zero cost, zero complexity.</p>
+        </div>
+      </div>
+      <div class="how-step">
+        <div class="how-num serif">IV</div>
+        <div class="how-body">
+          <div class="how-title serif">Go Live — Instantly</div>
+          <p class="how-desc">The moment your first customer scans a QR code and places an order, you're live. Watch orders stream in real-time on your dashboard. Serve faster, earn more, and close the day with an automatic revenue report.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ TESTIMONIALS ══════════════════════════ -->
+<section class="testi-section reveal">
+  <div class="container">
+    <div style="text-align:center;max-width:680px;margin:0 auto;">
+      <div class="section-eyebrow">Early Adoption Journey</div>
+      <h2 class="section-title serif">We've Been on the Ground.<br/>Here's What Owners Said.</h2>
+      <p style="color:var(--muted);font-size:1rem;line-height:1.8;margin-top:16px;">
+        Before launching publicly, our team personally visited restaurants across cities — walked in, showed the demo, and listened. Every single owner was excited. Here's what they told us, in their own words.
+      </p>
+    </div>
+
+    <!-- Journey highlight bar -->
+    <div style="display:flex;justify-content:center;gap:48px;flex-wrap:wrap;margin:52px 0;padding:32px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);text-align:center;">
+      <div>
+        <div style="font-family:var(--font-display);font-size:2.4rem;color:var(--gold);font-weight:600;">15+</div>
+        <div style="font-size:0.75rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:4px;">Restaurants Visited</div>
+      </div>
+      <div style="width:1px;background:var(--border);"></div>
+      <div>
+        <div style="font-family:var(--font-display);font-size:2.4rem;color:var(--gold);font-weight:600;">100%</div>
+        <div style="font-size:0.75rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:4px;">Ready to Install</div>
+      </div>
+      <div style="width:1px;background:var(--border);"></div>
+      <div>
+        <div style="font-family:var(--font-display);font-size:2.4rem;color:var(--gold);font-weight:600;">4+</div>
+        <div style="font-size:0.75rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:4px;">Cities Covered</div>
+      </div>
+      <div style="width:1px;background:var(--border);"></div>
+      <div>
+        <div style="font-family:var(--font-display);font-size:2.4rem;color:var(--gold);font-weight:600;">✦</div>
+        <div style="font-size:0.75rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:4px;">Overwhelmingly Positive</div>
+      </div>
+    </div>
+
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"Honestly, I've been looking for something exactly like this for two years. The moment you showed me the QR ordering — I told my manager, this is it. When can we start?"</div>
+        <div class="testi-author">
+          <div class="testi-av">R</div>
+          <div>
+            <div class="testi-name">Multi-cuisine Restaurant</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"We lose so much time during rush hours — waiters running around, orders getting missed. This solves every single problem. And no extra hardware? That's what sold me immediately."</div>
+        <div class="testi-author">
+          <div class="testi-av">S</div>
+          <div>
+            <div class="testi-name">North Indian Restaurant</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"I'm already paying 22% to Zomato. If I can run my own ordering system for a flat monthly fee with zero commission — that's not even a decision, that's a no-brainer."</div>
+        <div class="testi-author">
+          <div class="testi-av">A</div>
+          <div>
+            <div class="testi-name">Fine Dining Restaurant</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"The live dashboard blew my mind. I can see every table's order, mark it served, and track revenue — all from my phone. My current POS system costs ₹40,000 and does half of this."</div>
+        <div class="testi-author">
+          <div class="testi-av">V</div>
+          <div>
+            <div class="testi-name">Café</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"My customers are young. They're already on their phones. Why not let them order from there? The concept is brilliant and the execution looks very clean and professional."</div>
+        <div class="testi-author">
+          <div class="testi-av">P</div>
+          <div>
+            <div class="testi-name">Quick Service Restaurant</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testi-card" style="background:rgba(201,168,76,0.04);border-color:rgba(201,168,76,0.2);">
+        <div style="font-size:0.7rem;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:20px;">Satyronix Note</div>
+        <div class="testi-quote" style="font-style:normal;font-size:0.95rem;color:rgba(237,232,225,0.6);line-height:1.8;">
+          Every restaurant we walked into appreciated the idea. The enthusiasm was unanimous. We are now in active development and onboarding. If you're a restaurant owner — <strong style="color:var(--gold-lt);">register today</strong> and be among the first to go live on your own platform.
+        </div>
+        <div style="margin-top:24px;">
+          <button class="btn-gold" onclick="openModal()" style="width:100%;justify-content:center;padding:14px;">Register Your Restaurant →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════ FEEDBACK SECTION ══════════════════════════ -->
+<section class="section reveal" id="feedback" style="background:var(--bg2);border-top:1px solid var(--border);">
+  <div class="container">
+    <div style="text-align:center;max-width:620px;margin:0 auto 60px;">
+      <div class="section-eyebrow">Community Voice</div>
+      <h2 class="section-title serif">What People Are Saying</h2>
+      <p style="color:var(--muted);font-size:1rem;line-height:1.8;">Real opinions from restaurant owners and visitors who've interacted with us. Share yours too.</p>
+      <button class="btn-gold" onclick="openFeedbackModal()" style="margin-top:28px;padding:16px 40px;">Share Your Feedback →</button>
+    </div>
+
+    <!-- Live Feedback Cards -->
+    <div id="feedbackGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;"></div>
+    <p id="feedbackEmpty" style="text-align:center;color:var(--muted);font-size:0.9rem;display:none;">Be the first to share your thoughts!</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════ CTA ══════════════════════════ -->
+<section class="cta-section reveal">
+  <div class="cta-glow"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="ornamental-divider" style="margin-bottom:52px;"><div class="div-line"></div><div class="div-diamond"></div><div class="div-line"></div></div>
+    <h2 class="serif">Your Restaurant Deserves<br/><em style="color:var(--gold-lt);">Its Own Digital Stage.</em></h2>
+    <p>Join forward-thinking restaurant owners who have transformed their operations with Rasoi Live. Registration is free. Our team contacts you within 24 hours.</p>
+    <div class="cta-actions">
+      <button class="btn-gold" onclick="openModal()" style="padding:20px 52px;font-size:1rem;">Register Your Restaurant →</button>
+      <button class="btn-ghost" style="padding:19px 40px;">Talk to Our Team</button>
+    </div>
+    <p style="margin-top:28px;font-size:0.82rem;color:var(--muted);">No credit card required &nbsp;·&nbsp; No commitment &nbsp;·&nbsp; Setup in under 24 hours</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════ FOOTER ══════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-brand-logo" style="margin-bottom:16px;">
+          <img src="logo.png" alt="Rasoi Live" style="height:50px;" onerror="this.style.display='none'"/>
+          <span class="serif" style="display:none;">RASOI <em>LIVE</em></span>
+        </div>
+        <p>The next-generation restaurant operating system built for modern India. Your brand. Your menu. Your revenue. All in one platform.</p>
+        <div class="satyronix" style="margin-top:24px;">
+          <div class="satyronix-dot"></div>
+          <span>A product by &nbsp;<strong>Satyronix Publications</strong></span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Product</h5>
+        <a href="#identity">Your Branding</a>
+        <a href="#features">All Features</a>
+        <a href="#devices">Device Support</a>
+        <a href="#how">How It Works</a>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <a href="#">About Satyronix</a>
+        <a href="#">Our Mission</a>
+        <a href="#" onclick="openModal();return false;">Register Restaurant</a>
+        <a href="#">Contact Us</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Refund Policy</a>
+        <a href="#">Data Security</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Satyronix Publications. All Rights Reserved. Rasoi Live is a registered product.</p>
+      <p>Crafted with ❤️ in India 🇮🇳</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════ REGISTRATION MODAL ══════════════════════════ -->
+<div class="modal-overlay" id="regModal" onclick="closeModalOutside(event)">
+  <div class="modal" id="modalBox">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <!-- FORM VIEW -->
+    <div id="formView">
+      <div class="modal-header">
+        <div class="modal-eyebrow">Satyronix Publications</div>
+        <div class="modal-title serif">Register Your Restaurant</div>
+        <p class="modal-sub">Fill in your details below. Our team will reach out within 24 hours to complete your onboarding and get your branded Rasoi Live platform ready.</p>
+      </div>
+
+      <div class="modal-body">
+        <form id="regForm" onsubmit="submitForm(event)">
+
+          <!-- Restaurant Info -->
+          <div class="form-section-label">Restaurant Details</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Restaurant Name <span>*</span></label>
+              <input class="form-input" type="text" name="restaurantName" placeholder="e.g. Spice Garden" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Cuisine Type <span>*</span></label>
+              <input class="form-input" type="text" name="cuisineType" placeholder="e.g. North Indian, Chinese"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">City <span>*</span></label>
+              <input class="form-input" type="text" name="city" placeholder="e.g. Mumbai" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Number of Tables</label>
+              <select class="form-select form-input" name="tables">
+                <option value="">Select range</option>
+                <option>1 – 5 tables</option>
+                <option>6 – 15 tables</option>
+                <option>16 – 30 tables</option>
+                <option>31 – 50 tables</option>
+                <option>50+ tables</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-group">
+              <label class="form-label">Restaurant Address</label>
+              <input class="form-input" type="text" name="address" placeholder="Full address (optional)"/>
+            </div>
+          </div>
+
+          <div class="form-divider"></div>
+
+          <!-- Owner Info -->
+          <div class="form-section-label">Owner / Contact Details</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Owner Name <span>*</span></label>
+              <input class="form-input" type="text" name="ownerName" placeholder="Your full name" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">WhatsApp / Phone <span>*</span></label>
+              <input class="form-input" type="tel" name="phone" placeholder="+91 98765 43210" required/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Email Address <span>*</span></label>
+              <input class="form-input" type="email" name="email" placeholder="owner@restaurant.com" required/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">How Did You Hear About Us?</label>
+              <select class="form-select form-input" name="source">
+                <option value="">Select</option>
+                <option>Word of Mouth</option>
+                <option>Instagram / Social Media</option>
+                <option>Google Search</option>
+                <option>Referral from another owner</option>
+                <option>Satyronix Team</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-divider"></div>
+
+          <!-- Expected Pricing -->
+          <div class="form-section-label">Proposed Pricing Structure</div>
+          <p class="form-note" style="margin-bottom:16px; color:var(--gold-lt);">Please specify the budget or amounts you are expecting to pay. This helps our team customize your final onboarding proposal.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Installation Fee (₹) <span>*</span></label>
+              <input class="form-input" type="number" name="installationFee" placeholder="e.g. 5000" required/>
+              <div class="form-note">One-time setup & onboarding fee</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Monthly Subscription (₹) <span>*</span></label>
+              <input class="form-input" type="number" name="monthlySubscription" placeholder="e.g. 1500" required/>
+              <div class="form-note">Recurring software & support fee</div>
+            </div>
+          </div>
+
+          <div class="form-divider"></div>
+
+          <!-- Additional Info -->
+          <div class="form-section-label">Anything Else?</div>
+          <div class="form-group">
+            <label class="form-label">Message / Special Requirements</label>
+            <textarea class="form-textarea form-input" name="message" placeholder="Tell us anything specific about your restaurant or requirements (optional)"></textarea>
+          </div>
+
+          <div class="submit-row">
+            <button type="submit" class="form-submit" id="submitBtn">
+              Submit Registration →
+            </button>
+          </div>
+          
+          <!-- Trust Badges -->
+          <div style="display:flex; justify-content:center; gap:24px; margin-top:24px; border-top:1px solid rgba(255,255,255,0.05); padding-top:24px;">
+            <div style="display:flex; align-items:center; gap:8px; font-size:0.75rem; color:var(--muted);"><span style="color:var(--gold);">🔒</span> 256-bit Secure</div>
+            <div style="display:flex; align-items:center; gap:8px; font-size:0.75rem; color:var(--muted);"><span style="color:var(--gold);">⚡</span> 24h Setup</div>
+            <div style="display:flex; align-items:center; gap:8px; font-size:0.75rem; color:var(--muted);"><span style="color:var(--gold);">💯</span> No Commitment</div>
+          </div>
+          <p class="form-note" style="margin-top:24px;text-align:center;">By submitting, you agree to our <a href="#" onclick="openPrivacyModal();return false;" style="color:var(--gold-drk);">Privacy Policy</a>. We will never share your information.</p>
+        </form>
+      </div>
+    </div>
+
+    <!-- SUCCESS VIEW -->
+    <div class="form-success" id="successView">
+      <div class="ornamental-divider" style="margin:0 auto 40px;"><div class="div-line"></div><div class="div-diamond"></div><div class="div-line"></div></div>
+      <div class="success-icon">🎉</div>
+      <div class="success-title serif">Welcome to Rasoi Live!</div>
+      <p class="success-text">
+        Your registration has been received.<br/>
+        The Satyronix team will contact you on your provided phone and email within <strong>24 hours</strong> to begin your personalized onboarding.<br/><br/>
+        Get ready to transform your restaurant. 🍽️
+      </p>
+      <button class="btn-gold" style="margin-top:40px;" onclick="closeModal()">Close</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════ PRIVACY POLICY MODAL ══════════════════════════ -->
+<div class="modal-overlay" id="privacyModal" onclick="closePrivacyOutside(event)" style="z-index:2000;">
+  <div class="modal" id="privacyBox" style="max-height:90vh;overflow-y:auto;">
+    <button class="modal-close" onclick="closePrivacyModal()">✕</button>
+    <div class="modal-header">
+      <div class="modal-eyebrow">Satyronix Publications</div>
+      <div class="modal-title serif">Privacy Policy</div>
+      <p class="modal-sub">Effective Date: August 1, 2026 &nbsp;·&nbsp; Rasoi Live Platform</p>
+    </div>
+    <div class="modal-body" style="padding-bottom:48px;">
+
+      <div class="form-section-label">1. Introduction</div>
+      <p style="color:var(--muted);font-size:0.9rem;line-height:1.8;margin-bottom:24px;">
+        Satyronix Publications ("we", "our", or "us") operates the Rasoi Live platform. This Privacy Policy explains how we collect, use, and protect information you provide when registering your restaurant or using our services. By using Rasoi Live, you agree to the practices described here.
+      </p>
+
+      <div class="form-section-label">2. Information We Collect</div>
+      <p style="color:var(--muted);font-size:0.9rem;line-height:1.8;margin-bottom:12px;">When you register your restaurant, we collect:</p>
+      <ul style="color:var(--muted);font-size:0.9rem;line-height:2;padding-left:20px;margin-bottom:24px;">
+        <li>Restaurant name, cuisine type, and address</li>
+        <li>Owner's full name, phone number, and email address</li>
+        <li>Number of tables and operational details</li>
+        <li>Pricing expectations and special requirements</li>
+        <li>Date and time of form submission</li>
+      </ul>
+
+      <div class="form-section-label">3. How We Use Your Information</div>
+      <ul style="color:var(--muted);font-size:0.9rem;line-height:2;padding-left:20px;margin-bottom:24px;">
+        <li>To contact you for onboarding and setup of your Rasoi Live platform</li>
+        <li>To customize your restaurant's digital identity and menu system</li>
+        <li>To provide technical support and service updates</li>
+        <li>To send invoices and manage your subscription</li>
+      </ul>
+
+      <div class="form-section-label">4. Data Storage &amp; Security</div>
+      <p style="color:var(--muted);font-size:0.9rem;line-height:1.8;margin-bottom:24px;">
+        Your information is stored securely in a private, access-controlled database managed by Satyronix Publications. We use industry-standard encryption and security practices. Only authorized team members have access to your data, strictly for operational purposes.
+      </p>
+
+      <div class="form-section-label">5. We Never Sell Your Data</div>
+      <p style="color:var(--muted);font-size:0.9rem;line-height:1.8;margin-bottom:24px;">
+        We do <strong style="color:var(--cream);">not</strong> sell, rent, trade, or share your personal information with any third party for marketing or commercial purposes. Your data belongs to you and is used solely to operate and improve your Rasoi Live experience.
+      </p>
+
+      <div class="form-section-label">6. Data Retention</div>
+      <p style="color:var(--muted);font-size:0.9rem;line-height:1.8;margin-bottom:24px;">
+        We retain your information for as long as your restaurant is active on our platform or as required by law. Upon cancellation of your subscription, you may request full deletion of your data by contacting us.
+      </p>
+
+      <div class="form-section-label">7. Your Rights</div>
+      <ul style="color:var(--muted);font-size:0.9rem;line-height:2;padding-left:20px;margin-bottom:24px;">
+        <li>Request access to the data we hold about you</li>
+        <li>Request correction of inaccurate information</li>
+        <li>Request deletion of your data</li>
+        <li>Withdraw consent at any time by contacting us</li>
+      </ul>
+
+      <div class="form-section-label">8. Cookies</div>
+      <p style="color:var(--muted);font-size:0.9rem;line-height:1.8;margin-bottom:24px;">
+        Our registration website does not use tracking cookies or third-party analytics tools that share data externally. Basic session functionality may use cookies solely for site operation.
+      </p>
+
+      <div class="form-section-label">9. Contact Us</div>
+      <p style="color:var(--muted);font-size:0.9rem;line-height:1.8;margin-bottom:32px;">
+        For any questions, data requests, or concerns about this Privacy Policy, please contact:<br/><br/>
+        <strong style="color:var(--cream);">Satyronix Publications</strong><br/>
+        Silchar, Assam, India<br/>
+        📧 <a href="mailto:contact@satyronix.com" style="color:var(--gold-drk);">contact@satyronix.com</a>
+      </p>
+
+      <button class="btn-gold" style="width:100%;" onclick="closePrivacyModal()">I Understand — Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ FEEDBACK MODAL ══════════════════════════ -->
+<div class="modal-overlay" id="feedbackModal" onclick="closeFeedbackOutside(event)" style="z-index:2100;">
+  <div class="modal" id="feedbackBox">
+    <button class="modal-close" onclick="closeFeedbackModal()">✕</button>
+    <div class="modal-header">
+      <div class="modal-eyebrow">Community Voice</div>
+      <div class="modal-title serif">Share Your Feedback</div>
+      <p class="modal-sub">Tell us what you think about Rasoi Live. Your voice helps us improve.</p>
+    </div>
+    <div class="modal-body">
+      <form id="feedbackForm" onsubmit="submitFeedback(event)">
+
+        <div class="form-group">
+          <label class="form-label">Restaurant Name <span>*</span></label>
+          <input class="form-input" type="text" name="fbRestaurant" placeholder="e.g. Spice Garden" required/>
+        </div>
+
+        <div class="form-group" style="margin-top:8px;">
+          <label class="form-label">Your Rating <span>*</span></label>
+          <div id="starRating" style="display:flex;gap:8px;margin-top:8px;">
+            <span class="star-btn" data-val="1" onclick="setRating(1)" style="font-size:2rem;cursor:pointer;color:rgba(255,255,255,0.2);transition:color 0.2s;">★</span>
+            <span class="star-btn" data-val="2" onclick="setRating(2)" style="font-size:2rem;cursor:pointer;color:rgba(255,255,255,0.2);transition:color 0.2s;">★</span>
+            <span class="star-btn" data-val="3" onclick="setRating(3)" style="font-size:2rem;cursor:pointer;color:rgba(255,255,255,0.2);transition:color 0.2s;">★</span>
+            <span class="star-btn" data-val="4" onclick="setRating(4)" style="font-size:2rem;cursor:pointer;color:rgba(255,255,255,0.2);transition:color 0.2s;">★</span>
+            <span class="star-btn" data-val="5" onclick="setRating(5)" style="font-size:2rem;cursor:pointer;color:rgba(255,255,255,0.2);transition:color 0.2s;">★</span>
+          </div>
+          <input type="hidden" name="fbRating" id="fbRatingInput" value="5"/>
+        </div>
+
+        <div class="form-group" style="margin-top:16px;">
+          <label class="form-label">Your Feedback <span>*</span></label>
+          <textarea class="form-input form-textarea" name="fbMessage" placeholder="Share your honest experience with Rasoi Live..." required style="min-height:120px;"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Your Role (optional)</label>
+          <input class="form-input" type="text" name="fbRole" placeholder="e.g. Restaurant Owner, Chef, Manager"/>
+        </div>
+
+        <div style="margin-top:24px;">
+          <button type="submit" class="form-submit" id="fbSubmitBtn">Submit Feedback →</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── APPS SCRIPT ENDPOINT ──────────────────────────────────
+  // Paste your Google Apps Script Web App URL below:
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw8E1m4hiQY2fVCA8og_Nj1LuLic-ike9j_92hDyoyDR1BTHlmA5rwNhGQIm7ud4G6q/exec';
+  // ─────────────────────────────────────────────────────────
+
+  function openModal() {
+    document.getElementById('regModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('regModal').classList.remove('active');
+    document.body.style.overflow = '';
+    // Reset form after close
+    setTimeout(() => {
+      document.getElementById('formView').style.display = 'block';
+      document.getElementById('successView').classList.remove('active');
+      document.getElementById('regForm').reset();
+    }, 400);
+  }
+
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('regModal')) closeModal();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closePrivacyModal(); } });
+
+  function openPrivacyModal() {
+    document.getElementById('privacyModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closePrivacyModal() {
+    document.getElementById('privacyModal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  function closePrivacyOutside(e) {
+    if (e.target === document.getElementById('privacyModal')) closePrivacyModal();
+  }
+
+  function submitForm(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    const form = document.getElementById('regForm');
+    const data = new FormData(form);
+    const payload = {};
+    data.forEach((v, k) => payload[k] = v);
+    payload.submittedAt = new Date().toLocaleString('en-IN', { dateStyle: 'long', timeStyle: 'short', timeZone: 'Asia/Kolkata' });
+
+    // ✅ Show success IMMEDIATELY — don't wait for Google's response
+    document.getElementById('formView').style.display = 'none';
+    document.getElementById('successView').classList.add('active');
+
+    // Send data in background (fire & forget — no await)
+    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+      const urlParams = new URLSearchParams(payload).toString();
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: urlParams
+      }).catch(() => {}); // silently ignore any network error
+    }
+  }
+
+  // ── NAV SCROLL ────────────────────────────────────────────
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // ── REVEAL ANIMATION ─────────────────────────────────────
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.06 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // ══════════════════════════════════════════════════════════
+  // FEEDBACK SYSTEM
+  // ══════════════════════════════════════════════════════════
+  let selectedRating = 5;
+
+  function setRating(val) {
+    selectedRating = val;
+    document.getElementById('fbRatingInput').value = val;
+    document.querySelectorAll('.star-btn').forEach(s => {
+      s.style.color = parseInt(s.dataset.val) <= val ? 'var(--gold)' : 'rgba(255,255,255,0.2)';
+    });
+  }
+  // Init stars to 5
+  setRating(5);
+
+  function openFeedbackModal() {
+    document.getElementById('feedbackModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeFeedbackModal() {
+    document.getElementById('feedbackModal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  function closeFeedbackOutside(e) {
+    if (e.target === document.getElementById('feedbackModal')) closeFeedbackModal();
+  }
+
+  // Render a single feedback card
+  function renderFeedbackCard(fb) {
+    const stars = '★'.repeat(parseInt(fb.rating)) + '☆'.repeat(5 - parseInt(fb.rating));
+    const initial = (fb.restaurant || 'A')[0].toUpperCase();
+    const card = document.createElement('div');
+    card.className = 'testi-card';
+    card.style.animation = 'modalIn 0.45s ease forwards';
+    card.innerHTML = `
+      <div class="testi-stars" style="color:var(--gold);">${stars}</div>
+      <div class="testi-quote" style="font-style:italic;">"${fb.message}"</div>
+      <div class="testi-author" style="margin-top:20px;">
+        <div class="testi-av">${initial}</div>
+        <div>
+          <div class="testi-name">${fb.restaurant}</div>
+          ${fb.role ? `<div class="testi-resto" style="font-size:0.75rem;color:var(--muted);">${fb.role}</div>` : ''}
+        </div>
+      </div>`;
+    return card;
+  }
+
+  // Load and display all saved feedbacks from localStorage
+  function loadFeedbacks() {
+    const grid = document.getElementById('feedbackGrid');
+    const empty = document.getElementById('feedbackEmpty');
+    const feedbacks = JSON.parse(localStorage.getItem('rasoi_feedbacks') || '[]');
+    grid.innerHTML = '';
+    if (feedbacks.length === 0) {
+      empty.style.display = 'block';
+    } else {
+      empty.style.display = 'none';
+      feedbacks.slice().reverse().forEach(fb => grid.appendChild(renderFeedbackCard(fb)));
+    }
+  }
+  loadFeedbacks();
+
+  function submitFeedback(e) {
+    e.preventDefault();
+    const btn = document.getElementById('fbSubmitBtn');
+    btn.disabled = true;
+
+    const form = document.getElementById('feedbackForm');
+    const data = new FormData(form);
+    const fb = {
+      restaurant: data.get('fbRestaurant'),
+      rating: data.get('fbRating') || selectedRating,
+      message: data.get('fbMessage'),
+      role: data.get('fbRole') || '',
+      date: new Date().toLocaleDateString('en-IN')
+    };
+
+    // Save to localStorage so it shows live on the page
+    const existing = JSON.parse(localStorage.getItem('rasoi_feedbacks') || '[]');
+    existing.push(fb);
+    localStorage.setItem('rasoi_feedbacks', JSON.stringify(existing));
+
+    // Reload display
+    loadFeedbacks();
+
+    // Send to Google Sheet in background (type=feedback → goes to Feedback sheet)
+    if (APPS_SCRIPT_URL && APPS_SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+      const payload = new URLSearchParams({
+        type: 'feedback',
+        restaurantName: fb.restaurant,
+        rating: fb.rating,
+        message: fb.message,
+        role: fb.role,
+        submittedAt: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+      }).toString();
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: payload
+      }).catch(() => {});
+    }
+
+    // Close modal and reset
+    closeFeedbackModal();
+    form.reset();
+    setRating(5);
+    btn.disabled = false;
+  }
+</script>
+</body>
+</html>
