@@ -337,17 +337,19 @@ export default function OrderStatus({ orderId, tableNo, userName, isOffline, onA
             <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
               {/* QR Code */}
               <div style={{ background: '#fff', padding: 10, borderRadius: 12, flexShrink: 0 }}>
-                <img src={qrUrl} alt="UPI QR Code" width={140} height={140} style={{ display: 'block' }} />
+                <img src="/qr.png" alt="UPI QR Code" width={140} height={140} style={{ display: 'block' }} />
               </div>
 
               {/* Right side info */}
               <div style={{ flex: 1, fontFamily: 'Inter, sans-serif' }}>
                 <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 8 }}>
-                  Scan the QR code using any UPI app to pay:
+                  Scan the QR code to pay:
                 </div>
                 <div style={{ fontWeight: 900, fontSize: '1.4rem', color: 'var(--primary)', marginBottom: 6 }}>₹{total}</div>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>UPI ID: rasoi@okaxis</div>
-                <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: 2 }}>Google Pay · PhonePe · Paytm · BHIM</div>
+                
+                <a href={`upi://pay?pa=${upiId}&pn=${restName}&am=${total}&cu=INR`} className="btn-primary" style={{ display: 'inline-block', padding: '10px 16px', marginTop: 8, textDecoration: 'none', borderRadius: 8, fontWeight: 700, fontSize: '0.9rem', width: '100%', textAlign: 'center' }}>
+                  📲 Pay by App
+                </a>
               </div>
             </div>
 

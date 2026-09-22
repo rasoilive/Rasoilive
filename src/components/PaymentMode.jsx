@@ -84,17 +84,11 @@ export default function PaymentMode({ pendingPayload, onOrderSuccess, onBack }) 
             <img src="/qr.png" alt="UPI QR Code" style={{ width: 200, height: 200, display: 'block' }} />
           </div>
 
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: 16 }}>Or pay using apps on your phone:</p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: 16 }}>Or tap below to open installed apps:</p>
           
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginBottom: 32 }}>
-            <a href={upiLink} className="btn-outline-gray" style={{ flex: 1, padding: '12px 0', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Google_Pay_Logo_%282020%29.svg/512px-Google_Pay_Logo_%282020%29.svg.png" alt="GPay" style={{ height: 20 }} />
-            </a>
-            <a href={upiLink} className="btn-outline-gray" style={{ flex: 1, padding: '12px 0', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <img src="https://download.logo.wine/logo/PhonePe/PhonePe-Logo.wine.png" alt="PhonePe" style={{ height: 24, filter: 'brightness(0) invert(1)' }} />
-            </a>
-            <a href={upiLink} className="btn-outline-gray" style={{ flex: 1, padding: '12px 0', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo_%28standalone%29.svg/512px-Paytm_Logo_%28standalone%29.svg.png" alt="Paytm" style={{ height: 16 }} />
+          <div style={{ marginBottom: 32 }}>
+            <a href={upiLink} className="btn-outline-gray" style={{ width: '100%', padding: '14px 0', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, letterSpacing: 1, border: '1px solid var(--primary)', color: 'var(--primary)', borderRadius: 8 }}>
+              📲 PAY BY APP
             </a>
           </div>
 
