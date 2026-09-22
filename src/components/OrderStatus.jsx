@@ -340,16 +340,23 @@ export default function OrderStatus({ orderId, tableNo, userName, isOffline, onA
                 <img src="/qr.png" alt="UPI QR Code" width={140} height={140} style={{ display: 'block' }} />
               </div>
 
-              {/* Right side info */}
               <div style={{ flex: 1, fontFamily: 'Inter, sans-serif' }}>
                 <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: 8 }}>
                   Scan the QR code to pay:
                 </div>
                 <div style={{ fontWeight: 900, fontSize: '1.4rem', color: 'var(--primary)', marginBottom: 6 }}>₹{total}</div>
                 
-                <a href={`upi://pay?pa=${upiId}&pn=${restName}&am=${total}&cu=INR`} className="btn-primary" style={{ display: 'inline-block', padding: '10px 16px', marginTop: 8, textDecoration: 'none', borderRadius: 8, fontWeight: 700, fontSize: '0.9rem', width: '100%', textAlign: 'center' }}>
-                  📲 Pay by App
-                </a>
+                <div style={{ display: 'flex', gap: 6, marginTop: 12 }}>
+                  <a href={`upi://pay?pa=${upiId}&pn=${restName}&am=${total}&cu=INR`} style={{ flex: 1, padding: '8px 0', textDecoration: 'none', textAlign: 'center', background: '#fff', color: '#3c4043', borderRadius: 6, fontWeight: 700, border: '1px solid #dadce0', fontSize: '0.75rem' }}>
+                    GPay
+                  </a>
+                  <a href={`phonepe://pay?pa=${upiId}&pn=${restName}&am=${total}&cu=INR`} style={{ flex: 1, padding: '8px 0', textDecoration: 'none', textAlign: 'center', background: '#5f259f', color: '#fff', borderRadius: 6, fontWeight: 700, fontSize: '0.75rem' }}>
+                    PhonePe
+                  </a>
+                  <a href={`paytmmp://pay?pa=${upiId}&pn=${restName}&am=${total}&cu=INR`} style={{ flex: 1, padding: '8px 0', textDecoration: 'none', textAlign: 'center', background: '#002970', color: '#00baf2', borderRadius: 6, fontWeight: 800, fontSize: '0.75rem' }}>
+                    Paytm
+                  </a>
+                </div>
               </div>
             </div>
 

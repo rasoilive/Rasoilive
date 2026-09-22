@@ -70,8 +70,11 @@ export default function PaymentMode({ pendingPayload, onOrderSuccess, onBack }) 
   if (showQR) {
     // Determine total amount from pendingPayload
     const amount = pendingPayload ? pendingPayload.total : 0
-    // UPI intent string
-    const upiLink = `upi://pay?pa=sumanroysumanroy776@oksbi&pn=Burnout%20Cafe&am=${amount}&cu=INR`
+    // UPI intent strings for specific apps
+    const upiParams = `pa=sumanroysumanroy776@oksbi&pn=Burnout%20Cafe&am=${amount}&cu=INR`
+    const gpayLink = `upi://pay?${upiParams}`
+    const phonepeLink = `phonepe://pay?${upiParams}`
+    const paytmLink = `paytmmp://pay?${upiParams}`
 
     return (
       <div className="view-center animate-fade-in" style={{ position: 'relative' }}>
@@ -84,11 +87,17 @@ export default function PaymentMode({ pendingPayload, onOrderSuccess, onBack }) 
             <img src="/qr.png" alt="UPI QR Code" style={{ width: 200, height: 200, display: 'block' }} />
           </div>
 
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: 16 }}>Or tap below to open installed apps:</p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: 16 }}>Or tap below to open specific apps:</p>
           
-          <div style={{ marginBottom: 32 }}>
-            <a href={upiLink} className="btn-outline-gray" style={{ width: '100%', padding: '14px 0', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, letterSpacing: 1, border: '1px solid var(--primary)', color: 'var(--primary)', borderRadius: 8 }}>
-              📲 PAY BY APP
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginBottom: 32 }}>
+            <a href={gpayLink} style={{ flex: 1, padding: '12px 0', textDecoration: 'none', textAlign: 'center', background: '#fff', color: '#3c4043', borderRadius: 8, fontWeight: 700, border: '1px solid #dadce0', fontSize: '0.9rem' }}>
+              GPay
+            </a>
+            <a href={phonepeLink} style={{ flex: 1, padding: '12px 0', textDecoration: 'none', textAlign: 'center', background: '#5f259f', color: '#fff', borderRadius: 8, fontWeight: 700, fontSize: '0.9rem' }}>
+              PhonePe
+            </a>
+            <a href={paytmLink} style={{ flex: 1, padding: '12px 0', textDecoration: 'none', textAlign: 'center', background: '#002970', color: '#00baf2', borderRadius: 8, fontWeight: 800, fontSize: '0.9rem' }}>
+              Paytm
             </a>
           </div>
 
