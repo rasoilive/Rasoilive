@@ -419,7 +419,7 @@ app.get('/api/orders', authenticateToken, async (req, res) => {
   try {
     const restCode = req.user.restCode.toUpperCase()
     const { status, limit = 100 } = req.query
-    const filter = { rest_code: { $regex: new RegExp(`^${restCode.trim()}$`, 'i') } }
+    const filter = { rest_code: { $regex: new RegExp(restCode.trim(), 'i') } }
     if (status) filter.status = status
 
     const orders = await col('orders')
@@ -658,7 +658,7 @@ app.get('/api/feedback', authenticateToken, async (req, res) => {
   try {
     const restCode = req.user.restCode.toUpperCase()
     const feedback = await col('feedback')
-      .find({ restCode: { $regex: new RegExp(`^${restCode.trim()}$`, 'i') } })
+      .find({ restCode: { $regex: new RegExp(restCode.trim(), 'i') } })
       .sort({ timestamp: -1 })
       .limit(200)
       .toArray()

@@ -1,7 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
 import SplashScreen from './components/SplashScreen'
 import LandingPage from './components/LandingPage'
-import LanguageSelection from './components/LanguageSelection'
+// LanguageSelection removed — app is English-only
 import NameEntry from './components/NameEntry'
 import TableEntry from './components/TableEntry'
 import MenuView from './components/MenuView'
@@ -97,7 +97,7 @@ export default function App() {
     const fadeTimer = setTimeout(() => setSplashOut(true), 1800)
     const nextTimer = setTimeout(() => {
       if (urlTable) {
-        setView(VIEWS.LANGUAGE) // Skip directly to language selection if table is in URL
+        setView(VIEWS.NAME) // Skip directly to name entry if table is in URL
       } else {
         setView(VIEWS.LANDING)
       }
@@ -176,9 +176,9 @@ export default function App() {
 
   if (view === VIEWS.SPLASH) return <SplashScreen fadeOut={splashOut} />
 
-  const showHeader = [VIEWS.LANGUAGE, VIEWS.NAME, VIEWS.TABLE, VIEWS.MENU, VIEWS.CART, VIEWS.PAYMENT, VIEWS.HISTORY].includes(view)
-  const showOwnerBtn = [VIEWS.LANDING, VIEWS.LANGUAGE, VIEWS.NAME, VIEWS.TABLE, VIEWS.MENU, VIEWS.HISTORY].includes(view)
-  const showFooter = [VIEWS.LANDING, VIEWS.LANGUAGE, VIEWS.NAME, VIEWS.TABLE, VIEWS.MENU, VIEWS.HISTORY, VIEWS.LEGAL_PRIVACY, VIEWS.LEGAL_TERMS, VIEWS.LEGAL_REFUND, VIEWS.LEGAL_DISC].includes(view)
+  const showHeader = [VIEWS.NAME, VIEWS.TABLE, VIEWS.MENU, VIEWS.CART, VIEWS.PAYMENT, VIEWS.HISTORY].includes(view)
+  const showOwnerBtn = [VIEWS.LANDING, VIEWS.NAME, VIEWS.TABLE, VIEWS.MENU, VIEWS.HISTORY].includes(view)
+  const showFooter = [VIEWS.LANDING, VIEWS.NAME, VIEWS.TABLE, VIEWS.MENU, VIEWS.HISTORY, VIEWS.LEGAL_PRIVACY, VIEWS.LEGAL_TERMS, VIEWS.LEGAL_REFUND, VIEWS.LEGAL_DISC].includes(view)
   
   // Offline payment logic disables back button on STATUS screen
   const isLocked = paymentOffline && view === VIEWS.STATUS
@@ -208,11 +208,7 @@ export default function App() {
       <div className="app-container animate-fade-in" style={{ paddingTop: showHeader ? 60 : 0 }}>
         
         {view === VIEWS.LANDING && (
-          <LandingPage onEnter={() => navigate(VIEWS.LANGUAGE)} />
-        )}
-
-        {view === VIEWS.LANGUAGE && (
-          <LanguageSelection onSelect={(lang) => { setLanguage(lang); navigate(VIEWS.NAME) }} />
+          <LandingPage onEnter={() => navigate(VIEWS.NAME)} />
         )}
 
         {view === VIEWS.NAME && (

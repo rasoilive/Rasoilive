@@ -1,22 +1,11 @@
 import { useState } from 'react'
 
-function loadRazorpayScript() {
-  return new Promise((resolve) => {
-    if (window.Razorpay) {
-      return resolve(true)
-    }
-    const script = document.createElement('script')
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js'
-    script.onload = () => resolve(true)
-    script.onerror = () => resolve(false)
-    document.body.appendChild(script)
-  })
-}
-
 export default function PaymentMode({ pendingPayload, onOrderSuccess, onBack }) {
   const [selected, setSelected] = useState(null)
   const [placing, setPlacing] = useState(false)
   const [error, setError] = useState('')
+  const [showQR, setShowQR] = useState(false)
+  const [createdOrderId, setCreatedOrderId] = useState(null)
 
   const handleProceed = async () => {
     if (!selected || !pendingPayload) return
@@ -38,59 +27,17 @@ export default function PaymentMode({ pendingPayload, onOrderSuccess, onBack }) 
       const order = await res.json()
       const orderId = order._id.toString()
       localStorage.setItem('demo_order_' + orderId, JSON.stringify({ ...order, _id: orderId }))
+      
+      setCreatedOrderId(orderId)
 
       if (selected === 'online') {
-        // Attempt Razorpay Gateway checkout
-        const isLoaded = await loadRazorpayScript()
-        if (isLoaded) {
-          try {
-            const payOrderRes = await fetch('/api/payment/create-order', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ amount: order.total, orderId })
-            })
-            const payData = await payOrderRes.json()
-
-            if (payOrderRes.ok && !payData.fallback && payData.orderId) {
-              // Launch Razorpay Modal
-              const options = {
-                key: payData.keyId,
-                amount: payData.amount,
-                currency: payData.currency,
-                name: 'Rasoi Live',
-                description: `Order #${orderId.slice(-6)}`,
-                order_id: payData.orderId,
-                handler: async function (response) {
-                  // Verify payment signature
-                  await fetch('/api/payment/verify', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      razorpay_order_id: response.razorpay_order_id,
-                      razorpay_payment_id: response.razorpay_payment_id,
-                      razorpay_signature: response.razorpay_signature,
-                      orderId
-                    })
-                  })
-                  onOrderSuccess(orderId, false)
-                },
-                prefill: {
-                  name: pendingPayload.customer_name || 'Guest',
-                },
-                theme: { color: '#ffc107' }
-              }
-              const rzp = new window.Razorpay(options)
-              rzp.open()
-              setPlacing(false)
-              return
-            }
-          } catch (e) {
-            console.warn('Razorpay checkout failed, proceeding with standard UPI QR fallback:', e)
-          }
-        }
+        // Show the manual UPI QR code screen instead of Razorpay
+        setShowQR(true)
+        setPlacing(false)
+        return
       }
 
-      // Default success for cash or offline/fallback online
+      // Default success for offline cash
       onOrderSuccess(orderId, isOffline)
     } catch (err) {
       // Offline LocalStorage fallback
@@ -103,9 +50,67 @@ export default function PaymentMode({ pendingPayload, onOrderSuccess, onBack }) 
         timestamp: new Date().toISOString()
       }
       localStorage.setItem('demo_order_' + mockOrderId, JSON.stringify(orderData))
+      
+      if (selected === 'online') {
+        setCreatedOrderId(mockOrderId)
+        setShowQR(true)
+        setPlacing(false)
+        return
+      }
+      
       onOrderSuccess(mockOrderId, isOffline)
     }
     setPlacing(false)
+  }
+
+  const handleConfirmPaid = () => {
+    onOrderSuccess(createdOrderId, false) // false = online
+  }
+
+  if (showQR) {
+    // Determine total amount from pendingPayload
+    const amount = pendingPayload ? pendingPayload.total : 0
+    // UPI intent string (requires a valid UPI ID in real usage, falling back to the one in settings if possible, but here we just use a placeholder or empty pa to let the QR code handle it if they just scan)
+    const upiLink = `upi://pay?pa=rasoi@okaxis&pn=Burnout%20Cafe&am=${amount}&cu=INR`
+
+    return (
+      <div className="view-center animate-fade-in" style={{ position: 'relative' }}>
+        <div className="card owner-login-card" style={{ width: '100%', maxWidth: 400, padding: '32px 24px', marginTop: 40, textAlign: 'center' }}>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 900, marginBottom: 8, color: 'var(--primary)' }}>Scan to Pay</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: 24 }}>Amount to pay: <strong style={{color: '#fff', fontSize: '1.2rem'}}>₹{amount}</strong></p>
+          
+          <div style={{ background: '#fff', padding: 16, borderRadius: 12, display: 'inline-block', marginBottom: 24 }}>
+            {/* The local QR code image */}
+            <img src="/qr.png" alt="UPI QR Code" style={{ width: 200, height: 200, display: 'block' }} />
+          </div>
+
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: 16 }}>Or pay using apps on your phone:</p>
+          
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginBottom: 32 }}>
+            <a href={upiLink} className="btn-outline-gray" style={{ flex: 1, padding: '12px 0', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Google_Pay_Logo_%282020%29.svg/512px-Google_Pay_Logo_%282020%29.svg.png" alt="GPay" style={{ height: 20 }} />
+            </a>
+            <a href={upiLink} className="btn-outline-gray" style={{ flex: 1, padding: '12px 0', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img src="https://download.logo.wine/logo/PhonePe/PhonePe-Logo.wine.png" alt="PhonePe" style={{ height: 24, filter: 'brightness(0) invert(1)' }} />
+            </a>
+            <a href={upiLink} className="btn-outline-gray" style={{ flex: 1, padding: '12px 0', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Paytm_Logo_%28standalone%29.svg/512px-Paytm_Logo_%28standalone%29.svg.png" alt="Paytm" style={{ height: 16 }} />
+            </a>
+          </div>
+
+          <button 
+            className="btn-primary" 
+            style={{ letterSpacing: 1.5, fontWeight: 700, padding: '14px', width: '100%', background: '#4CAF50', color: '#000' }}
+            onClick={handleConfirmPaid}
+          >
+            DONE / VIEW ORDER STATUS
+          </button>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', marginTop: 12, fontFamily: 'Inter, sans-serif' }}>
+            * Your order is already booked. Payment will be verified by the restaurant.
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -135,7 +140,7 @@ export default function PaymentMode({ pendingPayload, onOrderSuccess, onBack }) 
             }}
             onClick={() => setSelected('online')}
           >
-            💳 Pay Online (Razorpay / UPI / Card)
+            📱 Pay Online (Scan UPI QR)
           </button>
           
           <button
@@ -147,7 +152,7 @@ export default function PaymentMode({ pendingPayload, onOrderSuccess, onBack }) 
             }}
             onClick={() => setSelected('offline')}
           >
-            💵 Pay Offline (Cash / Pay at Counter)
+            💵 Pay Offline (Cash / At Counter)
           </button>
         </div>
 

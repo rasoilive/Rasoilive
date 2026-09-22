@@ -67,21 +67,9 @@ export default function MenuView({ tableNo, cart, cartTotal, cartQuantity, onAdd
   const [search,    setSearch]    = useState('')
   const [openCats,  setOpenCats]  = useState({ '🔥 Sizzlers': true }) // Open first by default
 
-  const fetchMenu = useCallback(async () => {
+  const fetchMenu = useCallback(() => {
     setLoading(true)
-    try {
-      const ownerStr = localStorage.getItem('rasoi_owner')
-      const restCode = ownerStr ? JSON.parse(ownerStr).restCode : (localStorage.getItem('rasoi_rest_code') || 'BURNOUT01')
-      const res = await fetch(`/api/menu?restCode=${restCode}`)
-      if (res.ok) {
-        const data = await res.json()
-        setMenuItems(data.length > 0 ? data : DEMO_MENU)
-      } else {
-        setMenuItems(DEMO_MENU)
-      }
-    } catch (err) {
-      setMenuItems(DEMO_MENU)
-    }
+    setMenuItems(DEMO_MENU)
     setLoading(false)
   }, [])
 
