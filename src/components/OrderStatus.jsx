@@ -12,7 +12,7 @@ const SUGGESTIONS = [
   '😊 Service was excellent!',
 ]
 
-function QuickFeedback({ orderId, customerName, isServed }) {
+function QuickFeedback({ orderId, customerName, restCode, isServed }) {
   const [rating, setRating]         = useState(0)
   const [hover, setHover]           = useState(0)
   const [selected, setSelected]     = useState([])
@@ -32,7 +32,7 @@ function QuickFeedback({ orderId, customerName, isServed }) {
       const res = await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId, rating, comment: fullComment, customerName })
+        body: JSON.stringify({ orderId, rating, comment: fullComment, customerName, restCode })
       })
       if (res.ok || res.status === 409) {
         localStorage.setItem(`feedback_${orderId}`, '1')
@@ -396,7 +396,7 @@ export default function OrderStatus({ orderId, tableNo, userName, isOffline, onA
 
         {/* ── Quick Feedback — always visible, fully interactive ── */}
         <div style={{ maxWidth: 520, margin: '0 auto' }}>
-          <QuickFeedback orderId={orderId} customerName={userName} isServed={isServed} />
+          <QuickFeedback orderId={orderId} customerName={userName} restCode={order?.rest_code} isServed={isServed} />
         </div>
 
         <p style={{ textAlign: 'center', fontSize: '0.72rem', color: '#444', marginTop: 20, paddingBottom: 8, fontFamily: 'Inter, sans-serif' }}>
